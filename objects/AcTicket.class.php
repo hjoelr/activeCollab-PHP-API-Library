@@ -18,12 +18,22 @@ class AcTicket extends AcObject
 	private $attachments		= array();		// Array of AcAttachments
 	private $assignees			= array();		// Array of AcAssignees
 
-	// prevent instantiation from the outside
-	protected function __construct($acBaseUrl, $userApiKey, $rawTicket)
+/*======================================================================*\
+	Function:	__construct
+	Purpose:	Creates a new ticket.
+	Input:		$rawTicket	this is an object generated from json_decode
+							as a response from the server. It cannot be
+							expected that all fields and values exist
+							in that object.
+	Output:		a new AcTicket object.
+\*======================================================================*/
+	
+	public function __construct($rawTicket=null)
 	{
-		parent::__construct($acBaseUrl, $userApiKey);
-		
-		$this->populate($rawTicket);
+		if ($rawTicket != null)
+		{
+			$this->populate($rawTicket);
+		}
 	}
 	
 	// populates the values in this ticket with the ones from the specified
@@ -60,11 +70,6 @@ class AcTicket extends AcObject
 			$this->setAttachments($rawTicket->attachments);
 		}
 		
-		echo '<h2>Populate</h2>';
-		echo '<pre>';
-		var_dump($rawTicket->assignees);
-		echo '</pre>';
-		
 		if (isset($rawTicket->assignees) && is_array($rawTicket->assignees)) {
 			$assigneeIds = array();
 			$owner = null;
@@ -77,27 +82,6 @@ class AcTicket extends AcObject
 			}
 			$this->setAssignees(array($assigneeIds, $owner));
 		}
-	}
-	
-	public static function load($acBaseUrl, $userApiKey, $project_id, $ticket_id)
-	{
-		$snoopy = new Snoopy();
-		$snoopy->accept = 'application/json';
-		
-		$url = AcHelper::makeApiUrl($acBaseUrl .'/projects/'. $project_id .'/tickets/'. $ticket_id, $userApiKey);
-		
-		$snoopy->fetch($url);
- 
-		// on failure, throw an exception
-		if ($snoopy->status != 200) {
-			throw new Exception($snoopy->headers[0]);
-		}
-		
-		$rawTicket = json_decode($snoopy->results);
-			
-		$acTicket = new AcTicket($acBaseUrl, $userApiKey, $rawTicket);
-		
-		return $acTicket;
 	}
 	
 	public static function create($acBaseUrl, $userApiKey, $project_id, $name, $body, 

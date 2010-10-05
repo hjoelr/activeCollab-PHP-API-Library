@@ -12,19 +12,29 @@ Version: 0.0.1
 
 ********************************************************/
 
-require_once 'Snoopy.class.php';	// This class does the communication
-									// using HTTP GET and POST to the
-									// activeCollab installation.
+//require_once 'lib/Snoopy.class.php';	// This class does the communication
+										// using HTTP GET and POST to the
+										// activeCollab installation.
 
-require_once 'objects/AcTicket.class.php';
+//require_once 'objects/AcTicket.class.php';
+
+//require_once 'exceptions/HttpException.class.php';
+
+require_once 'models/ModelAcObject.class.php';
+require_once 'models/ModelAcTicket.class.php';
+
 
 
 class ActivecollabAPI
 {
-
-	var $acBaseURL	= ""			// The base url of the activeCollab
-									// install.  Include trailing slash.
-	var $userAPIKey	= "";			// The activeCollab user API key.
+	var $Objects = null;		// ModelAcObject instance used for
+							// manipulating objects in the activeCollab
+							// install.
+	
+	var $Tickets = null;	// ModelAcTicket object used for manipulating
+							// tickets in the activeCollab install.
+	
+	
 	
 /*======================================================================*\
 	Function:	Constructor
@@ -37,10 +47,10 @@ class ActivecollabAPI
 	Output:		ActivecollabAPI object
 \*======================================================================*/
 	
-	public function __construct($acBaseURL="", $userAPIKey="")
+	public function __construct($acBaseURL, $userAPIKey=null)
 	{
-		$this->setBaseURL($acBaseURL);
-		$this->setUserAPIKey($userAPIKey);
+		$this->Objects = new ModelAcObject($acBaseURL, $userAPIKey);
+		$this->Tickets = new ModelAcTicket($acBaseURL, $userAPIKey);
 	}
 	
 /*======================================================================*\
@@ -54,7 +64,8 @@ class ActivecollabAPI
 
 	public function setBaseURL($acBaseURL)
 	{
-		$this->acBaseURL = $acBaseURL;
+		$this->Objects->setBaseURL($acBaseURL);
+		$this->Tickets->setBaseURL($acBaseURL);
 	}
 	
 /*======================================================================*\
@@ -66,7 +77,8 @@ class ActivecollabAPI
 
 	public function setUserAPIKey($userAPIKey)
 	{
-		$this->userAPIKey = $userAPIKey;
+		$this->Objects->setUserAPIKey($userAPIKey);
+		$this->Tickets->setUserAPIKey($userAPIKey);
 	}
 }
 

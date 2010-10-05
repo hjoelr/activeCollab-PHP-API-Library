@@ -4,9 +4,6 @@
 	
 class AcObject
 {
-	protected $acBaseUrl		= null;
-	protected $userApiKey		= null;
-
 	protected $object_id		= null;
 	protected $name 			= null;
 	protected $body				= null;
@@ -23,10 +20,12 @@ class AcObject
 	protected $milestone_id		= null;
 	protected $permissions		= null;			// An AcTicketPermission
 	
-	protected function __construct($acBaseUrl, $userApiKey)
+	protected function __construct($rawTicket=null)
 	{
-		$this->acBaseUrl = $acBaseUrl;
-		$this->userApiKey = $userApiKey;
+		if ($rawTicket != null)
+		{
+			$this->populate($rawTicket);
+		}
 	}
 	
 	protected function populate($rawTicket)

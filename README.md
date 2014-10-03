@@ -4,8 +4,7 @@ activeCollab PHP API Library
 This library is intended to simplify the process of communicating with an activeCollab
 install through the activeCollab API using PHP.  This project is definitely in pre-alpha
 stages and some major core changes may happen at any time.  That being said, please
-feel free to try it out on your own test projects in activeCollab and give me feedback
-at hjoelr@gmail.com.
+feel free to try it out on your own test projects in activeCollab.
 
 Getting Started
 ---------------
